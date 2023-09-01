@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "584010693194",
+    "project_id": "scavengerhunt-effe1",
+    "storage_bucket": "scavengerhunt-effe1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584010693194:android:e4d6ae22137978d34104b3",
+        "android_client_info": {
+          "package_name": "com.commex.scavengerhunt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584010693194-trveen5sdup8irtpsmj5f03rpbkuchnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWjxIT58djJBhxxO7vhXrvMl5GUZs5wpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584010693194-trveen5sdup8irtpsmj5f03rpbkuchnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "584010693194-uc9orfe1flrg6mf629tt1rvvohcvdtu5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.commex.scavengerhunt"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
