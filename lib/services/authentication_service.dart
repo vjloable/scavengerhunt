@@ -4,8 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:scavengerhunt/routes/home_route.dart';
 import 'package:scavengerhunt/routes/login_route.dart';
-import 'package:scavengerhunt/routes/redirect_route.dart';
+// import 'package:scavengerhunt/routes/redirect_route.dart';
 
 class AuthenticationService{
   static handleAuthState() {
@@ -13,7 +14,7 @@ class AuthenticationService{
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData){
-            return const RedirectRoute();
+            return const HomeRoute();
           } else {
             return const LoginRoute();
           }
