@@ -23,7 +23,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,7 +55,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '584010693194',
     projectId: 'scavengerhunt-effe1',
     authDomain: 'scavengerhunt-effe1.firebaseapp.com',
+    databaseURL: 'https://scavengerhunt-effe1-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'scavengerhunt-effe1.appspot.com',
+    measurementId: 'G-YBF6PH5YFQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -60,16 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:584010693194:android:e4d6ae22137978d34104b3',
     messagingSenderId: '584010693194',
     projectId: 'scavengerhunt-effe1',
+    databaseURL: 'https://scavengerhunt-effe1-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'scavengerhunt-effe1.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBLDAmtfw0HOEBAh2v14rcESXLtkAAw9hY',
-    appId: '1:584010693194:ios:92562313ef037c9c4104b3',
-    messagingSenderId: '584010693194',
-    projectId: 'scavengerhunt-effe1',
-    storageBucket: 'scavengerhunt-effe1.appspot.com',
-    iosClientId: '584010693194-uc9orfe1flrg6mf629tt1rvvohcvdtu5.apps.googleusercontent.com',
-    iosBundleId: 'com.commex.scavengerhunt',
   );
 }
