@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "584010693194",
+    "firebase_url": "https://scavengerhunt-effe1-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "scavengerhunt-effe1",
     "storage_bucket": "scavengerhunt-effe1.appspot.com"
   },
@@ -14,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "584010693194-trveen5sdup8irtpsmj5f03rpbkuchnj.apps.googleusercontent.com",
+          "client_id": "584010693194-1ljdsfsgitkf5e3atqe903ugj0r7e8um.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.commex.scavengerhunt",
+            "certificate_hash": "ab446fd26072a2c93f21556160cb7cc14f03f582"
+          }
+        },
+        {
+          "client_id": "584010693194-moq6vpcrdql6el9jg822ilhjvfb39fuq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "584010693194-trveen5sdup8irtpsmj5f03rpbkuchnj.apps.googleusercontent.com",
+              "client_id": "584010693194-moq6vpcrdql6el9jg822ilhjvfb39fuq.apps.googleusercontent.com",
               "client_type": 3
             },
             {
