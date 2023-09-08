@@ -1,9 +1,13 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+// import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scavengerhunt/misc/palette.dart';
-import 'package:scavengerhunt/routes/scan_route.dart';
-import 'package:scavengerhunt/services/authentication_service.dart';
+import 'package:scavengerhunt/routes/home_route_navs/compete_nav.dart';
+import 'package:scavengerhunt/routes/home_route_navs/explore_nav.dart';
+import 'package:scavengerhunt/routes/home_route_navs/home_nav.dart';
+import 'package:scavengerhunt/routes/home_route_navs/ranks_nav.dart';
 
 class HomeRoute extends StatefulWidget {
   const HomeRoute({super.key});
@@ -13,11 +17,16 @@ class HomeRoute extends StatefulWidget {
 }
 
 class _HomeRouteState extends State<HomeRoute> {
-  /// final Stream<QuerySnapshot> _hospitalStream = FirebaseFirestore.instance.collection('user').snapshots();
+  // final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  // final FirebaseDatabase _realtimeDatabase = FirebaseDatabase.instance;
+  // final _qrBox = Hive.box('qr');
   final User _user = FirebaseAuth.instance.currentUser!;
+  late List<Widget> _navPages;
   double _screenWidth = 0;
   double _screenHeight = 0;
+  int _currentIndex = 0;
 
+  
   @override
   void initState() {
     super.initState();
@@ -27,148 +36,72 @@ class _HomeRouteState extends State<HomeRoute> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Palette.bgColor,
-      body: SizedBox(
-        width: _screenWidth,
-        height: _screenHeight,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: SafeArea(
-                  child: SizedBox(
-                    width: _screenWidth,
-                    height: 70,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        IconButton(
-                          iconSize: 40,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.account_circle,
-                            size: 40,
-                            color: Palette.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          '${_user.displayName}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          iconSize: 25,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            Navigator.pop(context);
-                            AuthenticationService.signOut();
-                          },
-                          icon: const Icon(
-                            Icons.logout,
-                            size: 25,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
+    _navPages = [
+      homeNav(context, _screenWidth, _screenHeight, _user),
+      ranksNav(context, _screenWidth, _screenHeight),
+      competeNav(context, _screenWidth, _screenHeight),
+      exploreNav(context, _screenWidth, _screenHeight),
+    ];
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: Palette.primaryGradient,
+          stops: const [0, 0.7, 1],
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: _navPages.elementAt(_currentIndex),
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16.0),),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              gradient: LinearGradient(
+                colors: Palette.secondaryGradient,
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
+            height: 90,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: BottomNavigationBar(
+                elevation: 0,
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Colors.transparent,
+                selectedItemColor: Palette.primaryColor,
+                unselectedItemColor: Palette.secondaryBright,
+                currentIndex: _currentIndex,
+                onTap: (value) {
+                  setState(() {
+                    _currentIndex = value;
+                  });
+                },
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
                   ),
-                ),
-              ),
-              Material(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-                child: SizedBox(
-                  height: 100,
-                  width: _screenWidth - 40,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: SizedBox(
-                  width: _screenWidth,
-                  height: 80,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Home',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                        color: Palette.primaryColor,
-                      ),
-                    ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.leaderboard),
+                    label: 'Ranks',
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0).add(
-                  const EdgeInsets.only(bottom: 5)
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: SizedBox(
-                    height: 60,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Hospitals',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                      color: Palette.primaryColor,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 75,
-                                    child: Divider(
-                                      color: Palette.primaryColor,
-                                      thickness: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: CircleAvatar(
-                            backgroundColor: Palette.primaryColor,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const BarcodeScannerView(),));
-                              },
-                              icon: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.gamepad),
+                    label: 'Compete',
                   ),
-                ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.explore),
+                    label: 'Explore',
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
