@@ -29,18 +29,18 @@ class BarcodeDetectorPainter extends CustomPainter {
       ..strokeWidth = 3.0
       ..color = Palette.primaryColor;
 
-    final Paint background = Paint()..color = const Color(0x99000000);
+    final Paint background = Paint()..color = Palette.primaryDark.withOpacity(0.4);
 
     for (final Barcode barcode in barcodes) {
       final ParagraphBuilder builder = ParagraphBuilder(
         ParagraphStyle(
-            textAlign: TextAlign.left,
+            textAlign: TextAlign.center,
             fontSize: 16,
             textDirection: TextDirection.ltr),
       );
       builder.pushStyle(
-          ui.TextStyle(color: Palette.primaryColor, background: background));
-      /// builder.addText('${barcode.displayValue}');
+          ui.TextStyle(color: Palette.primaryColor, background: background, fontSize: 16, fontWeight: FontWeight.w300));
+      builder.addText('${barcode.displayValue}');
       builder.pop();
 
       final left = translateX(
