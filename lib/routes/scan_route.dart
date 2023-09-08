@@ -1,11 +1,14 @@
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:scavengerhunt/misc/painters/scan_route_painters/barcode_detector_painter.dart';
 import 'package:scavengerhunt/misc/painters/scan_route_painters/detector_view.dart';
+import 'package:scavengerhunt/routes/scan_route_screen/scanned_screen.dart';
 
 class BarcodeScannerView extends StatefulWidget {
-  const BarcodeScannerView({super.key});
+  final User user;
+  const BarcodeScannerView({super.key, required this.user});
 
   @override
   State<BarcodeScannerView> createState() => _BarcodeScannerViewState();
@@ -13,29 +16,50 @@ class BarcodeScannerView extends StatefulWidget {
 
 class _BarcodeScannerViewState extends State<BarcodeScannerView> {
   final BarcodeScanner _barcodeScanner = BarcodeScanner();
-  bool _canProcess = true;
-  bool _isBusy = false;
+  var _cameraLensDirection = CameraLensDirection.back;
   CustomPaint? _customPaint;
   String? _text;
-  var _cameraLensDirection = CameraLensDirection.back;
+  String? _code;
+  double _screenWidth = 0;
+  double _screenHeight = 0;
+  bool _canProcess = true;
+  bool _isBusy = false;
+  bool _didCapture = false;
+
+  @override
+  void initState() {
+    _code = null;
+    _didCapture = false;
+    super.initState();
+  }
 
   @override
   void dispose() {
     _canProcess = false;
+    _didCapture = false;
     _barcodeScanner.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DetectorView(
+    _screenWidth = MediaQuery.of(context).size.width;
+    _screenHeight = MediaQuery.of(context).size.height;
+    return _code == null ? DetectorView(
       title: 'Barcode Scanner',
       customPaint: _customPaint,
       text: _text,
       onImage: _processImage,
+      onCapture: _captureCode,
       initialCameraLensDirection: _cameraLensDirection,
       onCameraLensDirectionChanged: (value) => _cameraLensDirection = value,
-    );
+    ) : scannedScreen(context, _screenWidth, _screenHeight, widget.user, _code!);
+  }
+
+  void _captureCode(){
+    setState(() {
+      _didCapture = true;
+    });
   }
 
   Future<void> _processImage(InputImage inputImage) async {
@@ -55,6 +79,15 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
         _cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
+      print('_didCapture: $_didCapture');
+      print('_barcodes: ${barcodes.length}');
+      if (_didCapture && barcodes.length == 1)  {
+        setState(() {
+          _code = barcodes.first.displayValue;
+        });
+        _didCapture = false;
+      }
+      _didCapture = false;
     } else {
       String text = 'Barcodes found: ${barcodes.length}\n\n';
       for (final barcode in barcodes) {
