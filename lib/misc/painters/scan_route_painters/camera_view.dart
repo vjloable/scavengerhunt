@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:scavengerhunt/misc/palette.dart';
 
@@ -11,14 +12,16 @@ class CameraView extends StatefulWidget {
       {Key? key,
         required this.customPaint,
         required this.onImage,
+        required this.onCapture,
         this.onCameraFeedReady,
         this.onDetectorViewModeChanged,
         this.onCameraLensDirectionChanged,
-        this.initialCameraLensDirection = CameraLensDirection.back})
+        this.initialCameraLensDirection = CameraLensDirection.back,})
       : super(key: key);
 
   final CustomPaint? customPaint;
   final Function(InputImage inputImage) onImage;
+  final VoidCallback onCapture;
   final VoidCallback? onCameraFeedReady;
   final VoidCallback? onDetectorViewModeChanged;
   final Function(CameraLensDirection direction)? onCameraLensDirectionChanged;
@@ -32,7 +35,7 @@ class _CameraViewState extends State<CameraView> {
   static List<CameraDescription> _cameras = [];
   CameraController? _controller;
   int _cameraIndex = -1;
-  // double _screenWidth = 0;
+  double _screenWidth = 0;
   double _screenHeight = 0;
 
   @override
@@ -65,9 +68,12 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   Widget build(BuildContext context) {
-    // _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(body: _liveFeedBody());
+    return Scaffold(
+      backgroundColor: Palette.primaryDark,
+      body: _liveFeedBody(),
+    );
   }
 
   Widget _liveFeedBody() {
@@ -75,7 +81,7 @@ class _CameraViewState extends State<CameraView> {
     if (_controller == null) return Container();
     if (_controller?.value.isInitialized == false) return Container();
     return Container(
-      color: Palette.bgColor,
+      color: Palette.primaryDark,
       height: _screenHeight,
       child: Stack(
         alignment: Alignment.center,
@@ -93,19 +99,22 @@ class _CameraViewState extends State<CameraView> {
   }
 
   Widget _backButton() => Positioned(
-    top: 40,
-    left: 10,
-    child: SizedBox(
-      height: 50.0,
-      width: 50.0,
-      child: FloatingActionButton(
-        heroTag: Object(),
-        onPressed: () => Navigator.of(context).pop(),
-        backgroundColor: Colors.black54,
-        child: const Icon(
-          Icons.arrow_back_ios_outlined,
-          size: 20,
-          color: Colors.white,
+    top: 0,
+    child: SafeArea(
+      child: SizedBox(
+        height: 50.0,
+        width: _screenWidth,
+        child: TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          style: ButtonStyle(
+            shape: const MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+            backgroundColor: MaterialStatePropertyAll(Palette.secondaryDark),
+          ),
+          child: const Icon(
+            Icons.arrow_back_ios_outlined,
+            size: 20,
+            color: Colors.white,
+          ),
         ),
       ),
     ),
@@ -116,17 +125,19 @@ class _CameraViewState extends State<CameraView> {
     child: Material(
       color: Palette.primaryColor,
       borderRadius: BorderRadius.circular(60),
-      child: SizedBox(
-        height: 80,
-        width: 80,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: GestureDetector(
-            onTap: () {
-
-            },
+      child: InkWell(
+        onTap: () {
+          widget.onCapture();
+        },
+        borderRadius: BorderRadius.circular(50),
+        overlayColor: MaterialStatePropertyAll(Palette.primaryDark.withOpacity(0.6)),
+        child: SizedBox(
+          height: 80,
+          width: 80,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
             child: CircleAvatar(
-              backgroundColor: Palette.bgColor.withOpacity(0.3),
+              backgroundColor: Palette.primaryDark.withOpacity(0.3),
             ),
           ),
         ),
@@ -218,4 +229,23 @@ class _CameraViewState extends State<CameraView> {
       ),
     );
   }
+  //
+  // Future<XFile?> takePicture() async {
+  //   final CameraController? cameraController = _controller;
+  //   if (cameraController == null || !cameraController.value.isInitialized) {
+  //     return null;
+  //   }
+  //
+  //   if (cameraController.value.isTakingPicture) {
+  //     return null;
+  //   }
+  //
+  //   try {
+  //     final XFile file = await cameraController.takePicture();
+  //     return file;
+  //   } on CameraException catch (e) {
+  //     print(e.code);
+  //     return null;
+  //   }
+  // }
 }
