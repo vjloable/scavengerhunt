@@ -114,7 +114,7 @@ class _LoginRouteState extends State<LoginRoute> {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Palette.bgColor,
+      backgroundColor: Palette.primaryDark,
       body: SizedBox(
         height: _screenHeight,
         width: _screenWidth,
